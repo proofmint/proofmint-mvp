@@ -1,0 +1,94 @@
+{
+  "name": "ProofMint",
+  "desc": "",
+  "methods": [
+    {
+      "name": "createApplication",
+      "args": [
+        {
+          "name": "externalPayee",
+          "type": "address"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "registerAccount",
+      "args": [
+        {
+          "name": "role",
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "year",
+          "type": "string"
+        },
+        {
+          "name": "email",
+          "type": "string"
+        },
+        {
+          "name": "contact",
+          "type": "string"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "registerMint",
+      "args": [
+        {
+          "name": "assetId",
+          "type": "uint64"
+        },
+        {
+          "name": "addresses",
+          "type": "address[]"
+        },
+        {
+          "name": "costs",
+          "type": "pay"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "claimNft",
+      "args": [
+        {
+          "name": "assetId",
+          "type": "uint64"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "claimMbr",
+      "args": [
+        {
+          "name": "assetId",
+          "type": "uint64"
+        },
+        {
+          "name": "address",
+          "type": "address"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      }
+    }
+  ]
+}
