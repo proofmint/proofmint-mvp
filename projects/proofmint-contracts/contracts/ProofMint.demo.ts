@@ -56,7 +56,7 @@ const getMint = async (Caller: ProofMintClient, assetId: number) => {
     {
       sender: admin,
       resolveBy: 'id',
-      id: 727210068,
+      id: 727257345,
     },
     algorandClient.client.algod
   );

@@ -1,0 +1,11 @@
+export const APP_ID = 727257345;
+export const APP_ADDRESS = "TZ7BZFTNEF6NFFLBMXXNLT7NVHGJZ5GAJC2LJZPO5LBEHJIXWKKGANDQ3M";
+export const PINATA_API_JWT =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI2YjRmNTY2MC03YmEwLTRkNDYtYWNhMy1hZmI1MTQ0OTczYWQiLCJlbWFpbCI6InByb29mbWludC5hbGdvQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxLCJpZCI6IkZSQTEifSx7ImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxLCJpZCI6Ik5ZQzEifV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiIwN2ZmYzkyODU1NjVhYzQxMjZmYyIsInNjb3BlZEtleVNlY3JldCI6ImY5YTY4ZjEzNDNmYWZjZTUzMDdkZDYyNjFiMzYzY2M5MzViNTdhMjZjOWQyM2M0YWQ3MmQ2YTgzNDhiMjUxYzUiLCJleHAiOjE3NjE1NTQ2MDh9.yJf1JttOT263XNrZMbJJxmaQoINGwJaG9RKlI-MulHM";
+export const PINATA_API_SECRET = "f9a68f1343fafce5307dd6261b363cc935b57a26c9d23c4ad72d6a8348b251c5";
+export const PINATA_API_KEY = "07ffc9285565ac4126fc";
+export const IPFS_GATEWAY = "https://ipfs.algonode.xyz/ipfs/";
+export const TX_URL = "https://lora.algokit.io/testnet/transaction/";
+export const ASSET_URL = "https://lora.algokit.io/testnet/asset/";
+export const externalPayeeMnemonic =
+  "nuclear gadget float near little supply whisper rather east life credit engine blanket media whisper small term kingdom near awful burden federal capital about pledge";
