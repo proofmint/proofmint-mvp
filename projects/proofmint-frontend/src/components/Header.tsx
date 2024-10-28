@@ -127,7 +127,7 @@ export const Header = ({
                   (role === "guest" && (
                     <li className="nav-item">
                       <a className="nav-link active" aria-current="page" href="##about">
-                        About us
+                        About Us
                       </a>
                     </li>
                   ))}
@@ -166,23 +166,23 @@ export const Header = ({
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                   >
-                    Contact us
+                    Contact
                   </a>
                   <ul className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <li>
-                      <a className="dropdown-item" href="#">
+                      <a className="dropdown-item" target="_blank" href="tel:+917989763304">
                         <i className="fa-solid fa-phone fa-shake"></i>
                         <span>Phone</span>
                       </a>
                     </li>
                     <li>
-                      <a className="dropdown-item" href="#">
+                      <a className="dropdown-item" target="_blank" href="mailto:akash.mallareddy@gmail.com">
                         <i className="fa-solid fa-envelope"></i>
                         <span>Email</span>
                       </a>
                     </li>
                     <li>
-                      <a className="dropdown-item" href="#">
+                      <a className="dropdown-item" target="_blank" href="https://wa.me/+917989763304">
                         <i className="fa-brands fa-whatsapp"></i>
                         <span>Whatsapp</span>
                       </a>
@@ -191,16 +191,13 @@ export const Header = ({
                 </li>
               </ul>
               <div className="social">
-                <a href="#">
+                <a target="_blank" href="https://www.instagram.com/rejoltedtech/">
                   <i className="fa-brands fa-instagram fa-xl" style={{ color: "white" }}></i>
                 </a>
-                <a href="#">
-                  <i className="fa-brands fa-facebook fa-lg" style={{ color: "white" }}></i>
-                </a>
-                <a href="#">
+                <a target="_blank" href="https://www.linkedin.com/company/rejoltedtech/">
                   <i className="fa-brands fa-linkedin fa-lg" style={{ color: "white" }}></i>
                 </a>
-                <a href="#">
+                <a target="_blank" href="https://github.com/orgs/proofmint/repositories">
                   <i className="fa-brands fa-github fa-lg" style={{ color: "white" }}></i>
                 </a>
               </div>
@@ -237,7 +234,7 @@ export const Header = ({
                   (role === "guest" && (
                     <li className="nav-item">
                       <a className="nav-link active" aria-current="page" href="##about">
-                        About us
+                        About Us
                       </a>
                     </li>
                   ))}
@@ -276,23 +273,23 @@ export const Header = ({
                     aria-expanded="false"
                     style={{ color: "black" }}
                   >
-                    Contact us
+                    Contact
                   </a>
                   <ul className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <li>
-                      <a className="dropdown-item" href="#">
+                      <a className="dropdown-item" target="_blank" href="tel:+917989763304">
                         <i className="fa-solid fa-phone fa-shake"></i>
                         <span>Phone</span>
                       </a>
                     </li>
                     <li>
-                      <a className="dropdown-item" href="#">
+                      <a className="dropdown-item" target="_blank" href="mailto:akash.mallareddy@gmail.com">
                         <i className="fa-solid fa-envelope"></i>
                         <span>Email</span>
                       </a>
                     </li>
                     <li>
-                      <a className="dropdown-item" href="#">
+                      <a className="dropdown-item" target="_blank" href="https://wa.me/+917989763304">
                         <i className="fa-brands fa-whatsapp"></i>
                         <span>Whatsapp</span>
                       </a>
@@ -301,16 +298,13 @@ export const Header = ({
                 </li>
               </ul>
               <div className="socialicons">
-                <a href="#">
+                <a target="_blank" href="https://www.instagram.com/rejoltedtech/">
                   <i className="fa-brands fa-instagram fa-xl" style={{ color: "black" }}></i>
                 </a>
-                <a href="#">
-                  <i className="fa-brands fa-facebook fa-xl" style={{ color: "black" }}></i>
-                </a>
-                <a href="#">
+                <a target="_blank" href="https://www.linkedin.com/company/rejoltedtech/">
                   <i className="fa-brands fa-linkedin fa-xl" style={{ color: "black" }}></i>
                 </a>
-                <a href="#">
+                <a target="_blank" href="https://github.com/orgs/proofmint/repositories">
                   <i className="fa-brands fa-github fa-xl" style={{ color: "black" }}></i>
                 </a>
               </div>
