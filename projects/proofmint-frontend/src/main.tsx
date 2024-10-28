@@ -10,11 +10,11 @@ const walletManager = new WalletManager({
     WalletId.EXODUS,
     {
       id: WalletId.WALLETCONNECT,
-      options: { projectId: "2acd95086e53e4a7cc9c4880b68190dc" },
+      options: { projectId: "aec03fcba586a369f9fc352dfa5a88a9" },
     },
     {
       id: WalletId.LUTE,
-      options: { siteName: "POMA MVP" },
+      options: { siteName: "ProofMint" },
     },
   ],
   network: NetworkId.TESTNET,
