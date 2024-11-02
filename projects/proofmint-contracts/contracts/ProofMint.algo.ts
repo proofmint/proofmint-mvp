@@ -28,6 +28,8 @@ export class ProofMint extends Contract {
     this.externalPayeeAddress.value = externalPayee;
   }
 
+  increaseOpcodeLimit(): void {}
+
   registerAccount(role: string, name: string, year: string, email: string, contact: string): void {
     assert(this.users(this.txn.sender).exists === false, 'User already exists');
     if (role === 'institution' || role === 'company' || role === 'doa' || role === 'community') {

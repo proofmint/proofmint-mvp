@@ -56,16 +56,18 @@ const getMint = async (Caller: ProofMintClient, assetId: number) => {
     {
       sender: admin,
       resolveBy: 'id',
-      id: 727257345,
+      id: 0,
     },
     algorandClient.client.algod
   );
 
-  // await Caller.create.createApplication({ externalPayee: externalPayee.addr });
+  await Caller.create.createApplication({ externalPayee: externalPayee.addr });
 
   const { appId, appAddress } = await Caller.appClient.getAppReference();
   console.log('APP ID : ', appId);
   console.log('APP ADDRESS : ', appAddress);
+
+  return;
 
   // await transferTestTokens(algorandClient.client.algod, admin, appAddress, 100);
   const tokenCreate = algosdk.makeAssetCreateTxnWithSuggestedParamsFromObject({

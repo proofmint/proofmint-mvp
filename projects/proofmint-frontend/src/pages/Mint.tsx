@@ -119,10 +119,7 @@ export const Mint = ({
                             </button>
                           </div>`;
       prop.appendChild(newDiv);
-      setFormDetails((prevDetails) => ({
-        ...prevDetails,
-        properties: { ...prevDetails.properties, [key.value]: value.value },
-      }));
+      setFormDetails({ ...formDetails, properties: { ...formDetails.properties, [key.value]: value.value } });
       key.value = "";
       value.value = "";
 
@@ -135,11 +132,9 @@ export const Mint = ({
     const prop = document.getElementById(`prop-${id}`);
     if (prop) {
       prop.remove();
-      setFormDetails((prevDetails) => {
-        const newProperties = { ...prevDetails.properties };
-        delete newProperties[Object.keys(newProperties)[id]];
-        return { ...prevDetails, properties: newProperties };
-      });
+      const newProperties = { ...formDetails.properties };
+      delete newProperties[Object.keys(newProperties)[id]];
+      setFormDetails({ ...formDetails, properties: newProperties });
     }
   };
 
@@ -153,7 +148,7 @@ export const Mint = ({
       const lines = text.split("\n").slice(1); // Ignore the first row (header)
       const addresses = lines.map((line) => line.split(",")[0].trim()).filter((address) => validateAlgorandAddress(address));
       createToast(`${addresses.length} valid addresses found`);
-      setFormDetails((prevDetails) => ({ ...prevDetails, addresses }));
+      setFormDetails({ ...formDetails, addresses });
     };
     reader.readAsText(file);
   };
@@ -272,6 +267,7 @@ export const Mint = ({
       }
       const imageHash = await calculateSHA256(dataURIToBlob(formDetails.imageSrc));
       setIsSubmitting("Uploading Metadata to IPFS...");
+      console.log(formDetails.properties);
       const metadata = {
         name: formDetails.assetName,
         symbol: formDetails.unitName,
@@ -330,7 +326,7 @@ export const Mint = ({
       console.log(addresses, APP_ADDRESS, activeAccount?.address!);
       setIsSubmitting("Please sign the transaction in your wallet...");
       createToast("Please sign the transaction in your wallet");
-      const createMint = await Caller.registerMint(
+      const createMint = Caller.compose().registerMint(
         { assetId, addresses, costs: mbrPay },
         {
           boxes: [{ appIndex: 0, name: algosdk.bigIntToBytes(assetId, 8) }],
@@ -343,7 +339,11 @@ export const Mint = ({
           note: `registermint-${assetId}-badge`,
         }
       );
-      createToast("Successfully Registered Mint in Contract", TX_URL + createMint.transaction.txID());
+      for (let i = 0; i < 7; i++) {
+        createMint.increaseOpcodeLimit({}, { sender: { addr: activeAccount?.address!, signer: transactionSigner }, note: i });
+      }
+      const res = await createMint.execute();
+      createToast("Successfully Registered Mint in Contract", TX_URL + res.txIds[0]);
       setIsSubmitting("");
       navigate("/issued");
     } catch (error) {

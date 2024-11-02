@@ -56,6 +56,18 @@ createApplication:
 	app_global_put
 	retsub
 
+// increaseOpcodeLimit()void
+*abi_route_increaseOpcodeLimit:
+	// execute increaseOpcodeLimit()void
+	callsub increaseOpcodeLimit
+	int 1
+	return
+
+// increaseOpcodeLimit(): void
+increaseOpcodeLimit:
+	proto 0 0
+	retsub
+
 // registerAccount(string,string,string,string,string)void
 *abi_route_registerAccount:
 	// contact: string
@@ -87,7 +99,7 @@ createApplication:
 registerAccount:
 	proto 5 0
 
-	// contracts\ProofMint.algo.ts:32
+	// contracts\ProofMint.algo.ts:34
 	// assert(this.users(this.txn.sender).exists === false, 'User already exists')
 	txn Sender
 	box_len
@@ -100,7 +112,7 @@ registerAccount:
 	assert
 
 	// *if0_condition
-	// contracts\ProofMint.algo.ts:33
+	// contracts\ProofMint.algo.ts:35
 	// role === 'institution' || role === 'company' || role === 'doa' || role === 'community'
 	frame_dig -1 // role: string
 	byte 0x696e737469747574696f6e // "institution"
@@ -132,7 +144,7 @@ registerAccount:
 	bz *if0_elseif1_condition
 
 	// *if0_consequent
-	// contracts\ProofMint.algo.ts:34
+	// contracts\ProofMint.algo.ts:36
 	// this.users(this.txn.sender).value = { role: role, name: name, year: year, email: email, contact: contact }
 	txn Sender
 	dup
@@ -187,7 +199,7 @@ registerAccount:
 	b *if0_end
 
 *if0_elseif1_condition:
-	// contracts\ProofMint.algo.ts:35
+	// contracts\ProofMint.algo.ts:37
 	// role === 'user'
 	frame_dig -1 // role: string
 	byte 0x75736572 // "user"
@@ -195,7 +207,7 @@ registerAccount:
 	bz *if0_end
 
 	// *if0_elseif1_consequent
-	// contracts\ProofMint.algo.ts:36
+	// contracts\ProofMint.algo.ts:38
 	// this.users(this.txn.sender).value = { role: 'user', name: name, year: '', email: email, contact: contact }
 	txn Sender
 	dup
@@ -274,7 +286,7 @@ registerMint:
 	byte 0x
 	dupn 4
 
-	// contracts\ProofMint.algo.ts:41
+	// contracts\ProofMint.algo.ts:43
 	// assert(addresses.length > 0, 'No addresses provided')
 	frame_dig -2 // addresses: Address[]
 	len
@@ -286,7 +298,7 @@ registerMint:
 	// No addresses provided
 	assert
 
-	// contracts\ProofMint.algo.ts:42
+	// contracts\ProofMint.algo.ts:44
 	// assert(assetId.clawback === this.app.address, 'Clawback address must be the app address')
 	frame_dig -1 // assetId: AssetID
 	asset_params_get AssetClawback
@@ -297,7 +309,7 @@ registerMint:
 	// Clawback address must be the app address
 	assert
 
-	// contracts\ProofMint.algo.ts:43
+	// contracts\ProofMint.algo.ts:45
 	// assert(assetId.creator.assetBalance(assetId) >= addresses.length, 'Not enough assets')
 	frame_dig -1 // assetId: AssetID
 	asset_params_get AssetCreator
@@ -314,7 +326,7 @@ registerMint:
 	// Not enough assets
 	assert
 
-	// contracts\ProofMint.algo.ts:44
+	// contracts\ProofMint.algo.ts:46
 	// assert(this.mints(assetId.id).exists === false, 'Mint already exists')
 	frame_dig -1 // assetId: AssetID
 	itob
@@ -327,7 +339,7 @@ registerMint:
 	// Mint already exists
 	assert
 
-	// contracts\ProofMint.algo.ts:45
+	// contracts\ProofMint.algo.ts:47
 	// mintCount = this.globalMintCount.value + 1
 	byte 0x676c6f62616c4d696e74436f756e74 // "globalMintCount"
 	app_global_get
@@ -335,13 +347,13 @@ registerMint:
 	+
 	frame_bury 0 // mintCount: uint64
 
-	// contracts\ProofMint.algo.ts:46
+	// contracts\ProofMint.algo.ts:48
 	// this.globalMintCount.value = mintCount
 	byte 0x676c6f62616c4d696e74436f756e74 // "globalMintCount"
 	frame_dig 0 // mintCount: uint64
 	app_global_put
 
-	// contracts\ProofMint.algo.ts:47
+	// contracts\ProofMint.algo.ts:49
 	// cost = 2500 + 3200 + 34 * addresses.length * 400 + addresses.length * 205000 + 1000
 	int 5700
 	int 34
@@ -364,7 +376,7 @@ registerMint:
 	+
 	frame_bury 1 // cost: uint64
 
-	// contracts\ProofMint.algo.ts:48
+	// contracts\ProofMint.algo.ts:50
 	// verifyPayTxn(costs, { amount: { greaterThanEqualTo: cost }, receiver: this.app.address })
 	// verify amount
 	frame_dig -3 // costs: PayTxn
@@ -384,19 +396,19 @@ registerMint:
 	// transaction verification failed: {"txn":"costs","field":"receiver","expected":"this.app.address"}
 	assert
 
-	// contracts\ProofMint.algo.ts:49
+	// contracts\ProofMint.algo.ts:51
 	// sendPayment({ receiver: this.externalPayeeAddress.value, amount: addresses.length * 1000, fee: 1000 })
 	itxn_begin
 	int pay
 	itxn_field TypeEnum
 
-	// contracts\ProofMint.algo.ts:49
+	// contracts\ProofMint.algo.ts:51
 	// receiver: this.externalPayeeAddress.value
 	byte 0x65787465726e616c506179656541646472657373 // "externalPayeeAddress"
 	app_global_get
 	itxn_field Receiver
 
-	// contracts\ProofMint.algo.ts:49
+	// contracts\ProofMint.algo.ts:51
 	// amount: addresses.length * 1000
 	frame_dig -2 // addresses: Address[]
 	len
@@ -406,7 +418,7 @@ registerMint:
 	*
 	itxn_field Amount
 
-	// contracts\ProofMint.algo.ts:49
+	// contracts\ProofMint.algo.ts:51
 	// fee: 1000
 	int 1000
 	itxn_field Fee
@@ -414,18 +426,18 @@ registerMint:
 	// Submit inner transaction
 	itxn_submit
 
-	// contracts\ProofMint.algo.ts:50
+	// contracts\ProofMint.algo.ts:52
 	// addressClaims: AddressClaim[] = []
 	byte 0x
 	frame_bury 2 // addressClaims: AddressClaim[]
 
-	// contracts\ProofMint.algo.ts:51
+	// contracts\ProofMint.algo.ts:53
 	// for (let i = 0; i < addresses.length; i += 1)
 	int 0
 	frame_bury 3 // i: uint64
 
 *for_0:
-	// contracts\ProofMint.algo.ts:51
+	// contracts\ProofMint.algo.ts:53
 	// i < addresses.length
 	frame_dig 3 // i: uint64
 	frame_dig -2 // addresses: Address[]
@@ -435,7 +447,7 @@ registerMint:
 	<
 	bz *for_0_end
 
-	// contracts\ProofMint.algo.ts:52
+	// contracts\ProofMint.algo.ts:54
 	// oneAddressClaim: AddressClaim = { address: addresses[i], nftClaim: 0, mbrClaim: 0 }
 	frame_dig -2 // addresses: Address[]
 	store 255 // full array
@@ -454,7 +466,7 @@ registerMint:
 	concat
 	frame_bury 4 // oneAddressClaim: AddressClaim
 
-	// contracts\ProofMint.algo.ts:53
+	// contracts\ProofMint.algo.ts:55
 	// addressClaims.push(oneAddressClaim)
 	frame_dig 2 // addressClaims: AddressClaim[]
 	frame_dig 4 // oneAddressClaim: AddressClaim
@@ -462,7 +474,7 @@ registerMint:
 	frame_bury 2 // addressClaims: AddressClaim[]
 
 *for_0_continue:
-	// contracts\ProofMint.algo.ts:51
+	// contracts\ProofMint.algo.ts:53
 	// i += 1
 	frame_dig 3 // i: uint64
 	int 1
@@ -471,7 +483,7 @@ registerMint:
 	b *for_0
 
 *for_0_end:
-	// contracts\ProofMint.algo.ts:55
+	// contracts\ProofMint.algo.ts:57
 	// this.mints(assetId.id).value = addressClaims
 	frame_dig -1 // assetId: AssetID
 	itob
@@ -508,7 +520,7 @@ claimNft:
 	// Push empty bytes after the frame pointer to reserve space for local variables
 	byte 0x
 
-	// contracts\ProofMint.algo.ts:59
+	// contracts\ProofMint.algo.ts:61
 	// assert(this.mints(assetId.id).exists, 'No mint found')
 	frame_dig -1 // assetId: AssetID
 	itob
@@ -519,7 +531,7 @@ claimNft:
 	// No mint found
 	assert
 
-	// contracts\ProofMint.algo.ts:60
+	// contracts\ProofMint.algo.ts:62
 	// assert(assetId.clawback === this.app.address, 'Clawback address must be the app address')
 	frame_dig -1 // assetId: AssetID
 	asset_params_get AssetClawback
@@ -530,14 +542,14 @@ claimNft:
 	// Clawback address must be the app address
 	assert
 
-	// contracts\ProofMint.algo.ts:61
+	// contracts\ProofMint.algo.ts:63
 	// checkResult = this.checkAddressAvailable(assetId, this.txn.sender)
 	txn Sender
 	frame_dig -1 // assetId: AssetID
 	callsub checkAddressAvailable
 	frame_bury 0 // checkResult: (bool,uint64,(address,uint8,uint8))
 
-	// contracts\ProofMint.algo.ts:62
+	// contracts\ProofMint.algo.ts:64
 	// assert(checkResult[0], 'Address not found')
 	frame_dig 0 // checkResult: (bool,uint64,(address,uint8,uint8))
 	store 255 // full array
@@ -548,7 +560,7 @@ claimNft:
 	// Address not found
 	assert
 
-	// contracts\ProofMint.algo.ts:63
+	// contracts\ProofMint.algo.ts:65
 	// assert(checkResult[2].nftClaim === 0, 'Address already claimed')
 	frame_dig 0 // checkResult: (bool,uint64,(address,uint8,uint8))
 	store 255 // full array
@@ -561,7 +573,7 @@ claimNft:
 	// Address already claimed
 	assert
 
-	// contracts\ProofMint.algo.ts:64
+	// contracts\ProofMint.algo.ts:66
 	// assert(this.txn.sender.isOptedInToAsset(assetId), 'Address not opted in to asset')
 	txn Sender
 	frame_dig -1 // assetId: AssetID
@@ -572,7 +584,7 @@ claimNft:
 	// Address not opted in to asset
 	assert
 
-	// contracts\ProofMint.algo.ts:65
+	// contracts\ProofMint.algo.ts:67
 	// this.changeAddressClaimNft(assetId, checkResult[1])
 	frame_dig 0 // checkResult: (bool,uint64,(address,uint8,uint8))
 	store 255 // full array
@@ -582,7 +594,7 @@ claimNft:
 	frame_dig -1 // assetId: AssetID
 	callsub changeAddressClaimNft
 
-	// contracts\ProofMint.algo.ts:66
+	// contracts\ProofMint.algo.ts:68
 	// sendAssetTransfer({
 	//       sender: this.app.address,
 	//       assetSender: assetId.creator,
@@ -596,39 +608,39 @@ claimNft:
 	int axfer
 	itxn_field TypeEnum
 
-	// contracts\ProofMint.algo.ts:67
+	// contracts\ProofMint.algo.ts:69
 	// sender: this.app.address
 	global CurrentApplicationAddress
 	itxn_field Sender
 
-	// contracts\ProofMint.algo.ts:68
+	// contracts\ProofMint.algo.ts:70
 	// assetSender: assetId.creator
 	frame_dig -1 // assetId: AssetID
 	asset_params_get AssetCreator
 	pop
 	itxn_field AssetSender
 
-	// contracts\ProofMint.algo.ts:69
+	// contracts\ProofMint.algo.ts:71
 	// assetReceiver: this.txn.sender
 	txn Sender
 	itxn_field AssetReceiver
 
-	// contracts\ProofMint.algo.ts:70
+	// contracts\ProofMint.algo.ts:72
 	// assetAmount: 1
 	int 1
 	itxn_field AssetAmount
 
-	// contracts\ProofMint.algo.ts:71
+	// contracts\ProofMint.algo.ts:73
 	// xferAsset: assetId
 	frame_dig -1 // assetId: AssetID
 	itxn_field XferAsset
 
-	// contracts\ProofMint.algo.ts:72
+	// contracts\ProofMint.algo.ts:74
 	// fee: 1000
 	int 1000
 	itxn_field Fee
 
-	// contracts\ProofMint.algo.ts:73
+	// contracts\ProofMint.algo.ts:75
 	// note: 'claimnft-' + assetId.id.toString()
 	byte 0x636c61696d6e66742d // "claimnft-"
 	frame_dig -1 // assetId: AssetID
@@ -668,7 +680,7 @@ claimMbr:
 	// Push empty bytes after the frame pointer to reserve space for local variables
 	byte 0x
 
-	// contracts\ProofMint.algo.ts:78
+	// contracts\ProofMint.algo.ts:80
 	// assert(this.mints(assetId.id).exists, 'No mint found')
 	frame_dig -1 // assetId: AssetID
 	itob
@@ -679,7 +691,7 @@ claimMbr:
 	// No mint found
 	assert
 
-	// contracts\ProofMint.algo.ts:79
+	// contracts\ProofMint.algo.ts:81
 	// assert(assetId.clawback === this.app.address, 'Clawback address must be the app address')
 	frame_dig -1 // assetId: AssetID
 	asset_params_get AssetClawback
@@ -690,7 +702,7 @@ claimMbr:
 	// Clawback address must be the app address
 	assert
 
-	// contracts\ProofMint.algo.ts:80
+	// contracts\ProofMint.algo.ts:82
 	// assert(this.txn.sender === this.externalPayeeAddress.value, 'Only external payee can claim')
 	txn Sender
 	byte 0x65787465726e616c506179656541646472657373 // "externalPayeeAddress"
@@ -700,14 +712,14 @@ claimMbr:
 	// Only external payee can claim
 	assert
 
-	// contracts\ProofMint.algo.ts:81
+	// contracts\ProofMint.algo.ts:83
 	// checkResult = this.checkAddressAvailable(assetId, address)
 	frame_dig -2 // address: Address
 	frame_dig -1 // assetId: AssetID
 	callsub checkAddressAvailable
 	frame_bury 0 // checkResult: (bool,uint64,(address,uint8,uint8))
 
-	// contracts\ProofMint.algo.ts:82
+	// contracts\ProofMint.algo.ts:84
 	// assert(checkResult[0], 'Address not found')
 	frame_dig 0 // checkResult: (bool,uint64,(address,uint8,uint8))
 	store 255 // full array
@@ -718,7 +730,7 @@ claimMbr:
 	// Address not found
 	assert
 
-	// contracts\ProofMint.algo.ts:83
+	// contracts\ProofMint.algo.ts:85
 	// assert(checkResult[2].mbrClaim === 0, 'Address already claimed')
 	frame_dig 0 // checkResult: (bool,uint64,(address,uint8,uint8))
 	store 255 // full array
@@ -731,7 +743,7 @@ claimMbr:
 	// Address already claimed
 	assert
 
-	// contracts\ProofMint.algo.ts:84
+	// contracts\ProofMint.algo.ts:86
 	// this.changeAddressClaimMbr(assetId, checkResult[1])
 	frame_dig 0 // checkResult: (bool,uint64,(address,uint8,uint8))
 	store 255 // full array
@@ -741,28 +753,28 @@ claimMbr:
 	frame_dig -1 // assetId: AssetID
 	callsub changeAddressClaimMbr
 
-	// contracts\ProofMint.algo.ts:85
+	// contracts\ProofMint.algo.ts:87
 	// sendPayment({ receiver: address, amount: 202000, fee: 1000, note: 'claimmbr-' + assetId.id.toString() })
 	itxn_begin
 	int pay
 	itxn_field TypeEnum
 
-	// contracts\ProofMint.algo.ts:85
+	// contracts\ProofMint.algo.ts:87
 	// receiver: address
 	frame_dig -2 // address: Address
 	itxn_field Receiver
 
-	// contracts\ProofMint.algo.ts:85
+	// contracts\ProofMint.algo.ts:87
 	// amount: 202000
 	int 202000
 	itxn_field Amount
 
-	// contracts\ProofMint.algo.ts:85
+	// contracts\ProofMint.algo.ts:87
 	// fee: 1000
 	int 1000
 	itxn_field Fee
 
-	// contracts\ProofMint.algo.ts:85
+	// contracts\ProofMint.algo.ts:87
 	// note: 'claimmbr-' + assetId.id.toString()
 	byte 0x636c61696d6d62722d // "claimmbr-"
 	frame_dig -1 // assetId: AssetID
@@ -778,7 +790,7 @@ claimMbr:
 changeAddressClaimNft:
 	proto 2 0
 
-	// contracts\ProofMint.algo.ts:89
+	// contracts\ProofMint.algo.ts:91
 	// this.mints(assetId.id).value[addressIndex] = {
 	//       address: this.mints(assetId.id).value[addressIndex].address,
 	//       nftClaim: 1,
@@ -865,7 +877,7 @@ changeAddressClaimNft:
 changeAddressClaimMbr:
 	proto 2 0
 
-	// contracts\ProofMint.algo.ts:97
+	// contracts\ProofMint.algo.ts:99
 	// this.mints(assetId.id).value[addressIndex] = {
 	//       address: this.mints(assetId.id).value[addressIndex].address,
 	//       nftClaim: this.mints(assetId.id).value[addressIndex].nftClaim,
@@ -956,13 +968,13 @@ checkAddressAvailable:
 	byte 0x
 	dupn 5
 
-	// contracts\ProofMint.algo.ts:105
+	// contracts\ProofMint.algo.ts:107
 	// addresses = this.mints(assetId.id).value
 	frame_dig -1 // assetId: AssetID
 	itob
 	frame_bury 0 // storage key//addresses
 
-	// contracts\ProofMint.algo.ts:106
+	// contracts\ProofMint.algo.ts:108
 	// addressesLength = this.mints(assetId.id).size / 33
 	frame_dig -1 // assetId: AssetID
 	itob
@@ -974,17 +986,17 @@ checkAddressAvailable:
 	/
 	frame_bury 1 // addressesLength: uint64
 
-	// contracts\ProofMint.algo.ts:107
+	// contracts\ProofMint.algo.ts:109
 	// addressFound = false
 	int 0
 	frame_bury 2 // addressFound: bool
 
-	// contracts\ProofMint.algo.ts:108
+	// contracts\ProofMint.algo.ts:110
 	// addressIndex = 0
 	int 0
 	frame_bury 3 // addressIndex: uint64
 
-	// contracts\ProofMint.algo.ts:109
+	// contracts\ProofMint.algo.ts:111
 	// addressClaim: AddressClaim = { address: address, nftClaim: 0, mbrClaim: 0 }
 	frame_dig -2 // address: Address
 	byte 0x00
@@ -993,13 +1005,13 @@ checkAddressAvailable:
 	concat
 	frame_bury 4 // addressClaim: AddressClaim
 
-	// contracts\ProofMint.algo.ts:110
+	// contracts\ProofMint.algo.ts:112
 	// for (let i = 0; i < addressesLength; i += 1)
 	int 0
 	frame_bury 5 // i: uint64
 
 *for_1:
-	// contracts\ProofMint.algo.ts:110
+	// contracts\ProofMint.algo.ts:112
 	// i < addressesLength
 	frame_dig 5 // i: uint64
 	frame_dig 1 // addressesLength: uint64
@@ -1007,7 +1019,7 @@ checkAddressAvailable:
 	bz *for_1_end
 
 	// *if1_condition
-	// contracts\ProofMint.algo.ts:111
+	// contracts\ProofMint.algo.ts:113
 	// addresses[i].address === address
 	frame_dig 0 // storage key//addresses
 	box_get
@@ -1032,17 +1044,17 @@ checkAddressAvailable:
 	bz *if1_end
 
 	// *if1_consequent
-	// contracts\ProofMint.algo.ts:112
+	// contracts\ProofMint.algo.ts:114
 	// addressFound = true
 	int 1
 	frame_bury 2 // addressFound: bool
 
-	// contracts\ProofMint.algo.ts:113
+	// contracts\ProofMint.algo.ts:115
 	// addressIndex = i
 	frame_dig 5 // i: uint64
 	frame_bury 3 // addressIndex: uint64
 
-	// contracts\ProofMint.algo.ts:114
+	// contracts\ProofMint.algo.ts:116
 	// addressClaim = addresses[i]
 	frame_dig 0 // storage key//addresses
 	box_get
@@ -1066,7 +1078,7 @@ checkAddressAvailable:
 *if1_end:
 
 *for_1_continue:
-	// contracts\ProofMint.algo.ts:110
+	// contracts\ProofMint.algo.ts:112
 	// i += 1
 	frame_dig 5 // i: uint64
 	int 1
@@ -1075,7 +1087,7 @@ checkAddressAvailable:
 	b *for_1
 
 *for_1_end:
-	// contracts\ProofMint.algo.ts:118
+	// contracts\ProofMint.algo.ts:120
 	// return [addressFound, addressIndex, addressClaim];
 	byte 0x00
 	int 0
@@ -1103,12 +1115,13 @@ checkAddressAvailable:
 	err
 
 *call_NoOp:
+	method "increaseOpcodeLimit()void"
 	method "registerAccount(string,string,string,string,string)void"
 	method "registerMint(uint64,address[],pay)void"
 	method "claimNft(uint64)void"
 	method "claimMbr(uint64,address)void"
 	txna ApplicationArgs 0
-	match *abi_route_registerAccount *abi_route_registerMint *abi_route_claimNft *abi_route_claimMbr
+	match *abi_route_increaseOpcodeLimit *abi_route_registerAccount *abi_route_registerMint *abi_route_claimNft *abi_route_claimMbr
 
 	// this contract does not implement the given ABI method for call NoOp
 	err

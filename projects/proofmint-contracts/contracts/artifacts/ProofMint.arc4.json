@@ -15,6 +15,13 @@
       }
     },
     {
+      "name": "increaseOpcodeLimit",
+      "args": [],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
       "name": "registerAccount",
       "args": [
         {
