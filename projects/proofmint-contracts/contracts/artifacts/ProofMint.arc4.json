@@ -75,6 +75,10 @@
         {
           "name": "assetId",
           "type": "uint64"
+        },
+        {
+          "name": "index",
+          "type": "uint64"
         }
       ],
       "returns": {
@@ -91,6 +95,10 @@
         {
           "name": "address",
           "type": "address"
+        },
+        {
+          "name": "index",
+          "type": "uint64"
         }
       ],
       "returns": {

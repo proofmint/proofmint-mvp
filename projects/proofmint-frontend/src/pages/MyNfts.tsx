@@ -49,12 +49,16 @@ export const MyNfts = ({
     return Uint8Array.from(binString, (m) => m.codePointAt(0)!);
   }
 
-  const [mints, setMints] = useState<{ assetId: number; mbrClaim: number; nftClaim: number; metadata: any; type: string }[]>([]);
-  const [badges, setBadges] = useState<{ assetId: number; mbrClaim: number; nftClaim: number; metadata: any; type: string }[]>([]);
+  const [mints, setMints] = useState<
+    { assetId: number; mbrClaim: number; nftClaim: number; metadata: any; type: string; addressIndex: number }[]
+  >([]);
+  const [badges, setBadges] = useState<
+    { assetId: number; mbrClaim: number; nftClaim: number; metadata: any; type: string; addressIndex: number }[]
+  >([]);
 
-  const [certificates, setCertificates] = useState<{ assetId: number; mbrClaim: number; nftClaim: number; metadata: any; type: string }[]>(
-    []
-  );
+  const [certificates, setCertificates] = useState<
+    { assetId: number; mbrClaim: number; nftClaim: number; metadata: any; type: string; addressIndex: number }[]
+  >([]);
 
   useEffect(() => {
     const getBoxNames = async () => {
@@ -65,7 +69,7 @@ export const MyNfts = ({
           boxNames.push(Number(algosdk.bytesToBigInt(boxName.nameRaw)));
         }
       });
-      const mints: { assetId: number; mbrClaim: number; nftClaim: number; metadata: any; type: string }[] = [];
+      const mints: { assetId: number; mbrClaim: number; nftClaim: number; metadata: any; type: string; addressIndex: number }[] = [];
       for (let i = 0; i < boxNames.length; i++) {
         console.log(boxNames[i]);
         const mint = await getMint(boxNames[i]);
@@ -74,6 +78,7 @@ export const MyNfts = ({
         const userMint = mint.find((m) => m.address === activeAccount?.address!);
         console.log(userMint);
         if (userMint) {
+          const addressIndex = mint.findIndex((m) => m.address === activeAccount?.address!);
           const metadata = await getMetadata(boxNames[i]);
           const encoder = new TextEncoder();
           const typeTxn = await algorandClient.client.indexer
@@ -92,6 +97,7 @@ export const MyNfts = ({
               nftClaim: userMint.nftClaim,
               metadata,
               type,
+              addressIndex,
             });
           }
         }
@@ -124,7 +130,10 @@ export const MyNfts = ({
 
   const [claiming, setClaiming] = useState("");
 
-  const Claim = async (_: any, mint: { assetId: number; mbrClaim: number; nftClaim: number; metadata: any; type: string }) => {
+  const Claim = async (
+    _: any,
+    mint: { assetId: number; mbrClaim: number; nftClaim: number; metadata: any; type: string; addressIndex: number }
+  ) => {
     try {
       if (!activeAccount) {
         createToast("Please connect your wallet");
@@ -133,7 +142,7 @@ export const MyNfts = ({
       if (mint.mbrClaim == 0) {
         setClaiming("Claiming MBR...");
         const claim = await Caller.claimMbr(
-          { assetId: mint.assetId, address: activeAccount?.address! },
+          { assetId: mint.assetId, address: activeAccount?.address!, index: mint.addressIndex },
           {
             boxes: [{ appIndex: 0, name: algosdk.bigIntToBytes(mint.assetId, 8) }],
             assets: [mint.assetId],
@@ -155,7 +164,7 @@ export const MyNfts = ({
       });
 
       claimMint.claimNft(
-        { assetId: mint.assetId },
+        { assetId: mint.assetId, index: mint.addressIndex },
         {
           boxes: [{ appIndex: 0, name: algosdk.bigIntToBytes(mint.assetId, 8) }],
           assets: [mint.assetId],

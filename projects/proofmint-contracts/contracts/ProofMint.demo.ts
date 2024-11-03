@@ -56,18 +56,16 @@ const getMint = async (Caller: ProofMintClient, assetId: number) => {
     {
       sender: admin,
       resolveBy: 'id',
-      id: 0,
+      id: 728327785,
     },
     algorandClient.client.algod
   );
 
-  await Caller.create.createApplication({ externalPayee: externalPayee.addr });
+  // await Caller.create.createApplication({ externalPayee: externalPayee.addr });
 
   const { appId, appAddress } = await Caller.appClient.getAppReference();
   console.log('APP ID : ', appId);
   console.log('APP ADDRESS : ', appAddress);
-
-  return;
 
   // await transferTestTokens(algorandClient.client.algod, admin, appAddress, 100);
   const tokenCreate = algosdk.makeAssetCreateTxnWithSuggestedParamsFromObject({
@@ -111,7 +109,7 @@ const getMint = async (Caller: ProofMintClient, assetId: number) => {
   console.log(`Created Mint for ${assetId} : `, await getMint(Caller, assetId));
 
   const mbrSend = await Caller.claimMbr(
-    { assetId, address: newUser.addr },
+    { assetId, address: newUser.addr, index: 2 },
     {
       boxes: [{ appIndex: 0, name: algosdk.bigIntToBytes(assetId, 8) }],
       assets: [assetId],
@@ -133,7 +131,7 @@ const getMint = async (Caller: ProofMintClient, assetId: number) => {
   });
 
   claimMint.claimNft(
-    { assetId },
+    { assetId, index: 2 },
     {
       sender: newUser,
       boxes: [{ appIndex: 0, name: algosdk.bigIntToBytes(assetId, 8) }],

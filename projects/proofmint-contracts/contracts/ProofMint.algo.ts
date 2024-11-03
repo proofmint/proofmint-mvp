@@ -57,14 +57,14 @@ export class ProofMint extends Contract {
     this.mints(assetId.id).value = addressClaims;
   }
 
-  claimNft(assetId: AssetID): void {
+  claimNft(assetId: AssetID, index: uint64): void {
     assert(this.mints(assetId.id).exists, 'No mint found');
     assert(assetId.clawback === this.app.address, 'Clawback address must be the app address');
-    const checkResult = this.checkAddressAvailable(assetId, this.txn.sender);
-    assert(checkResult[0], 'Address not found');
-    assert(checkResult[2].nftClaim === 0, 'Address already claimed');
+    const addressClaimStat = this.mints(assetId.id).value[index];
+    assert(addressClaimStat.address === this.txn.sender, 'Address not found');
+    assert(addressClaimStat.nftClaim === 0, 'Address already claimed');
     assert(this.txn.sender.isOptedInToAsset(assetId), 'Address not opted in to asset');
-    this.changeAddressClaimNft(assetId, checkResult[1]);
+    this.changeAddressClaimNft(assetId, index);
     sendAssetTransfer({
       sender: this.app.address,
       assetSender: assetId.creator,
@@ -76,14 +76,15 @@ export class ProofMint extends Contract {
     });
   }
 
-  claimMbr(assetId: AssetID, address: Address): void {
+  claimMbr(assetId: AssetID, address: Address, index: uint64): void {
     assert(this.mints(assetId.id).exists, 'No mint found');
     assert(assetId.clawback === this.app.address, 'Clawback address must be the app address');
     assert(this.txn.sender === this.externalPayeeAddress.value, 'Only external payee can claim');
-    const checkResult = this.checkAddressAvailable(assetId, address);
-    assert(checkResult[0], 'Address not found');
-    assert(checkResult[2].mbrClaim === 0, 'Address already claimed');
-    this.changeAddressClaimMbr(assetId, checkResult[1]);
+    const addressClaimStat = this.mints(assetId.id).value[index];
+    assert(addressClaimStat.address === address, 'Address not found');
+    assert(addressClaimStat.mbrClaim === 0, 'Address already claimed');
+
+    this.changeAddressClaimMbr(assetId, index);
     sendPayment({ receiver: address, amount: 202000, fee: 1000, note: 'claimmbr-' + assetId.id.toString() });
   }
 

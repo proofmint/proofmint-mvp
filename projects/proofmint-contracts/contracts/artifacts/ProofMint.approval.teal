@@ -502,23 +502,28 @@ registerMint:
 	box_put
 	retsub
 
-// claimNft(uint64)void
+// claimNft(uint64,uint64)void
 *abi_route_claimNft:
+	// index: uint64
+	txna ApplicationArgs 2
+	btoi
+
 	// assetId: uint64
 	txna ApplicationArgs 1
 	btoi
 
-	// execute claimNft(uint64)void
+	// execute claimNft(uint64,uint64)void
 	callsub claimNft
 	int 1
 	return
 
-// claimNft(assetId: AssetID): void
+// claimNft(assetId: AssetID, index: uint64): void
 claimNft:
-	proto 1 0
+	proto 2 0
 
 	// Push empty bytes after the frame pointer to reserve space for local variables
 	byte 0x
+	dup
 
 	// contracts\ProofMint.algo.ts:61
 	// assert(this.mints(assetId.id).exists, 'No mint found')
@@ -541,31 +546,61 @@ claimNft:
 
 	// Clawback address must be the app address
 	assert
+	frame_dig -2 // index: uint64
+	frame_bury 0 // accessor: accessor//0//addressClaimStat
 
 	// contracts\ProofMint.algo.ts:63
-	// checkResult = this.checkAddressAvailable(assetId, this.txn.sender)
-	txn Sender
+	// addressClaimStat = this.mints(assetId.id).value[index]
 	frame_dig -1 // assetId: AssetID
-	callsub checkAddressAvailable
-	frame_bury 0 // checkResult: (bool,uint64,(address,uint8,uint8))
+	itob
+	frame_bury 1 // storage key//addressClaimStat
 
 	// contracts\ProofMint.algo.ts:64
-	// assert(checkResult[0], 'Address not found')
-	frame_dig 0 // checkResult: (bool,uint64,(address,uint8,uint8))
+	// assert(addressClaimStat.address === this.txn.sender, 'Address not found')
+	frame_dig 1 // storage key//addressClaimStat
+	box_get
+
+	// box value does not exist: this.mints(assetId.id).value
+	assert
+	extract 2 0
 	store 255 // full array
+	int 0 // initial offset
+	frame_dig 0 // saved accessor: accessor//0//addressClaimStat
+	int 34
+	* // acc * typeLength
+	+
+	int 0 // headOffset
+	+
 	load 255 // full array
-	int 0
-	getbit
+	swap
+	int 32
+	extract3
+	txn Sender
+	==
 
 	// Address not found
 	assert
 
 	// contracts\ProofMint.algo.ts:65
-	// assert(checkResult[2].nftClaim === 0, 'Address already claimed')
-	frame_dig 0 // checkResult: (bool,uint64,(address,uint8,uint8))
+	// assert(addressClaimStat.nftClaim === 0, 'Address already claimed')
+	frame_dig 1 // storage key//addressClaimStat
+	box_get
+
+	// box value does not exist: this.mints(assetId.id).value
+	assert
+	extract 2 0
 	store 255 // full array
+	int 0 // initial offset
+	frame_dig 0 // saved accessor: accessor//0//addressClaimStat
+	int 34
+	* // acc * typeLength
+	+
+	int 32 // headOffset
+	+
 	load 255 // full array
-	extract 41 1
+	swap
+	int 1
+	extract3
 	btoi
 	int 0
 	==
@@ -585,12 +620,8 @@ claimNft:
 	assert
 
 	// contracts\ProofMint.algo.ts:67
-	// this.changeAddressClaimNft(assetId, checkResult[1])
-	frame_dig 0 // checkResult: (bool,uint64,(address,uint8,uint8))
-	store 255 // full array
-	load 255 // full array
-	extract 1 8
-	btoi
+	// this.changeAddressClaimNft(assetId, index)
+	frame_dig -2 // index: uint64
 	frame_dig -1 // assetId: AssetID
 	callsub changeAddressClaimNft
 
@@ -652,8 +683,12 @@ claimNft:
 	itxn_submit
 	retsub
 
-// claimMbr(uint64,address)void
+// claimMbr(uint64,address,uint64)void
 *abi_route_claimMbr:
+	// index: uint64
+	txna ApplicationArgs 3
+	btoi
+
 	// address: address
 	txna ApplicationArgs 2
 	dup
@@ -661,24 +696,25 @@ claimNft:
 	int 32
 	==
 
-	// argument 0 (address) for claimMbr must be a address
+	// argument 1 (address) for claimMbr must be a address
 	assert
 
 	// assetId: uint64
 	txna ApplicationArgs 1
 	btoi
 
-	// execute claimMbr(uint64,address)void
+	// execute claimMbr(uint64,address,uint64)void
 	callsub claimMbr
 	int 1
 	return
 
-// claimMbr(assetId: AssetID, address: Address): void
+// claimMbr(assetId: AssetID, address: Address, index: uint64): void
 claimMbr:
-	proto 2 0
+	proto 3 0
 
 	// Push empty bytes after the frame pointer to reserve space for local variables
 	byte 0x
+	dup
 
 	// contracts\ProofMint.algo.ts:80
 	// assert(this.mints(assetId.id).exists, 'No mint found')
@@ -711,31 +747,61 @@ claimMbr:
 
 	// Only external payee can claim
 	assert
+	frame_dig -3 // index: uint64
+	frame_bury 0 // accessor: accessor//0//addressClaimStat
 
 	// contracts\ProofMint.algo.ts:83
-	// checkResult = this.checkAddressAvailable(assetId, address)
-	frame_dig -2 // address: Address
+	// addressClaimStat = this.mints(assetId.id).value[index]
 	frame_dig -1 // assetId: AssetID
-	callsub checkAddressAvailable
-	frame_bury 0 // checkResult: (bool,uint64,(address,uint8,uint8))
+	itob
+	frame_bury 1 // storage key//addressClaimStat
 
 	// contracts\ProofMint.algo.ts:84
-	// assert(checkResult[0], 'Address not found')
-	frame_dig 0 // checkResult: (bool,uint64,(address,uint8,uint8))
+	// assert(addressClaimStat.address === address, 'Address not found')
+	frame_dig 1 // storage key//addressClaimStat
+	box_get
+
+	// box value does not exist: this.mints(assetId.id).value
+	assert
+	extract 2 0
 	store 255 // full array
+	int 0 // initial offset
+	frame_dig 0 // saved accessor: accessor//0//addressClaimStat
+	int 34
+	* // acc * typeLength
+	+
+	int 0 // headOffset
+	+
 	load 255 // full array
-	int 0
-	getbit
+	swap
+	int 32
+	extract3
+	frame_dig -2 // address: Address
+	==
 
 	// Address not found
 	assert
 
 	// contracts\ProofMint.algo.ts:85
-	// assert(checkResult[2].mbrClaim === 0, 'Address already claimed')
-	frame_dig 0 // checkResult: (bool,uint64,(address,uint8,uint8))
+	// assert(addressClaimStat.mbrClaim === 0, 'Address already claimed')
+	frame_dig 1 // storage key//addressClaimStat
+	box_get
+
+	// box value does not exist: this.mints(assetId.id).value
+	assert
+	extract 2 0
 	store 255 // full array
+	int 0 // initial offset
+	frame_dig 0 // saved accessor: accessor//0//addressClaimStat
+	int 34
+	* // acc * typeLength
+	+
+	int 33 // headOffset
+	+
 	load 255 // full array
-	extract 42 1
+	swap
+	int 1
+	extract3
 	btoi
 	int 0
 	==
@@ -743,38 +809,34 @@ claimMbr:
 	// Address already claimed
 	assert
 
-	// contracts\ProofMint.algo.ts:86
-	// this.changeAddressClaimMbr(assetId, checkResult[1])
-	frame_dig 0 // checkResult: (bool,uint64,(address,uint8,uint8))
-	store 255 // full array
-	load 255 // full array
-	extract 1 8
-	btoi
+	// contracts\ProofMint.algo.ts:87
+	// this.changeAddressClaimMbr(assetId, index)
+	frame_dig -3 // index: uint64
 	frame_dig -1 // assetId: AssetID
 	callsub changeAddressClaimMbr
 
-	// contracts\ProofMint.algo.ts:87
+	// contracts\ProofMint.algo.ts:88
 	// sendPayment({ receiver: address, amount: 202000, fee: 1000, note: 'claimmbr-' + assetId.id.toString() })
 	itxn_begin
 	int pay
 	itxn_field TypeEnum
 
-	// contracts\ProofMint.algo.ts:87
+	// contracts\ProofMint.algo.ts:88
 	// receiver: address
 	frame_dig -2 // address: Address
 	itxn_field Receiver
 
-	// contracts\ProofMint.algo.ts:87
+	// contracts\ProofMint.algo.ts:88
 	// amount: 202000
 	int 202000
 	itxn_field Amount
 
-	// contracts\ProofMint.algo.ts:87
+	// contracts\ProofMint.algo.ts:88
 	// fee: 1000
 	int 1000
 	itxn_field Fee
 
-	// contracts\ProofMint.algo.ts:87
+	// contracts\ProofMint.algo.ts:88
 	// note: 'claimmbr-' + assetId.id.toString()
 	byte 0x636c61696d6d62722d // "claimmbr-"
 	frame_dig -1 // assetId: AssetID
@@ -790,7 +852,7 @@ claimMbr:
 changeAddressClaimNft:
 	proto 2 0
 
-	// contracts\ProofMint.algo.ts:91
+	// contracts\ProofMint.algo.ts:92
 	// this.mints(assetId.id).value[addressIndex] = {
 	//       address: this.mints(assetId.id).value[addressIndex].address,
 	//       nftClaim: 1,
@@ -877,7 +939,7 @@ changeAddressClaimNft:
 changeAddressClaimMbr:
 	proto 2 0
 
-	// contracts\ProofMint.algo.ts:99
+	// contracts\ProofMint.algo.ts:100
 	// this.mints(assetId.id).value[addressIndex] = {
 	//       address: this.mints(assetId.id).value[addressIndex].address,
 	//       nftClaim: this.mints(assetId.id).value[addressIndex].nftClaim,
@@ -968,13 +1030,13 @@ checkAddressAvailable:
 	byte 0x
 	dupn 5
 
-	// contracts\ProofMint.algo.ts:107
+	// contracts\ProofMint.algo.ts:108
 	// addresses = this.mints(assetId.id).value
 	frame_dig -1 // assetId: AssetID
 	itob
 	frame_bury 0 // storage key//addresses
 
-	// contracts\ProofMint.algo.ts:108
+	// contracts\ProofMint.algo.ts:109
 	// addressesLength = this.mints(assetId.id).size / 33
 	frame_dig -1 // assetId: AssetID
 	itob
@@ -986,17 +1048,17 @@ checkAddressAvailable:
 	/
 	frame_bury 1 // addressesLength: uint64
 
-	// contracts\ProofMint.algo.ts:109
+	// contracts\ProofMint.algo.ts:110
 	// addressFound = false
 	int 0
 	frame_bury 2 // addressFound: bool
 
-	// contracts\ProofMint.algo.ts:110
+	// contracts\ProofMint.algo.ts:111
 	// addressIndex = 0
 	int 0
 	frame_bury 3 // addressIndex: uint64
 
-	// contracts\ProofMint.algo.ts:111
+	// contracts\ProofMint.algo.ts:112
 	// addressClaim: AddressClaim = { address: address, nftClaim: 0, mbrClaim: 0 }
 	frame_dig -2 // address: Address
 	byte 0x00
@@ -1005,13 +1067,13 @@ checkAddressAvailable:
 	concat
 	frame_bury 4 // addressClaim: AddressClaim
 
-	// contracts\ProofMint.algo.ts:112
+	// contracts\ProofMint.algo.ts:113
 	// for (let i = 0; i < addressesLength; i += 1)
 	int 0
 	frame_bury 5 // i: uint64
 
 *for_1:
-	// contracts\ProofMint.algo.ts:112
+	// contracts\ProofMint.algo.ts:113
 	// i < addressesLength
 	frame_dig 5 // i: uint64
 	frame_dig 1 // addressesLength: uint64
@@ -1019,7 +1081,7 @@ checkAddressAvailable:
 	bz *for_1_end
 
 	// *if1_condition
-	// contracts\ProofMint.algo.ts:113
+	// contracts\ProofMint.algo.ts:114
 	// addresses[i].address === address
 	frame_dig 0 // storage key//addresses
 	box_get
@@ -1044,17 +1106,17 @@ checkAddressAvailable:
 	bz *if1_end
 
 	// *if1_consequent
-	// contracts\ProofMint.algo.ts:114
+	// contracts\ProofMint.algo.ts:115
 	// addressFound = true
 	int 1
 	frame_bury 2 // addressFound: bool
 
-	// contracts\ProofMint.algo.ts:115
+	// contracts\ProofMint.algo.ts:116
 	// addressIndex = i
 	frame_dig 5 // i: uint64
 	frame_bury 3 // addressIndex: uint64
 
-	// contracts\ProofMint.algo.ts:116
+	// contracts\ProofMint.algo.ts:117
 	// addressClaim = addresses[i]
 	frame_dig 0 // storage key//addresses
 	box_get
@@ -1078,7 +1140,7 @@ checkAddressAvailable:
 *if1_end:
 
 *for_1_continue:
-	// contracts\ProofMint.algo.ts:112
+	// contracts\ProofMint.algo.ts:113
 	// i += 1
 	frame_dig 5 // i: uint64
 	int 1
@@ -1087,7 +1149,7 @@ checkAddressAvailable:
 	b *for_1
 
 *for_1_end:
-	// contracts\ProofMint.algo.ts:120
+	// contracts\ProofMint.algo.ts:121
 	// return [addressFound, addressIndex, addressClaim];
 	byte 0x00
 	int 0
@@ -1118,8 +1180,8 @@ checkAddressAvailable:
 	method "increaseOpcodeLimit()void"
 	method "registerAccount(string,string,string,string,string)void"
 	method "registerMint(uint64,address[],pay)void"
-	method "claimNft(uint64)void"
-	method "claimMbr(uint64,address)void"
+	method "claimNft(uint64,uint64)void"
+	method "claimMbr(uint64,address,uint64)void"
 	txna ApplicationArgs 0
 	match *abi_route_increaseOpcodeLimit *abi_route_registerAccount *abi_route_registerMint *abi_route_claimNft *abi_route_claimMbr
 
