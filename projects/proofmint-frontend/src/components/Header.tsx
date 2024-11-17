@@ -1,8 +1,9 @@
 import { Wallet, WalletAccount } from "@txnlab/use-wallet-react";
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { algorandClient, Caller } from "../utils";
+import { algorandClient, Caller, externalPayee } from "../utils";
 import algosdk, { Transaction } from "algosdk";
+import * as algokit from "@algorandfoundation/algokit-utils";
 
 export const Header = ({
   role,
@@ -33,14 +34,25 @@ export const Header = ({
         setIsLoading("true");
         console.log(affiliation, name, establishedYear, email, contactNo);
         const year = affiliation === "user" ? "" : establishedYear;
+        let sug = await algorandClient.client.algod.getTransactionParams().do();
+        sug.fee = 2000;
+        sug.flatFee = true;
+        const paytxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+          from: externalPayee.addr,
+          to: externalPayee.addr,
+          amount: 0,
+          suggestedParams: sug,
+        });
         const group = await Caller.compose()
           .registerAccount(
             { role: affiliation, name, year, email, contact: contactNo },
             {
               boxes: [{ appIndex: 0, name: algosdk.decodeAddress(activeAccount.address).publicKey }],
               sender: { addr: activeAccount.address, signer: transactionSigner },
+              sendParams: { fee: algokit.algos(0) },
             }
           )
+          .addTransaction(paytxn, externalPayee)
           .atc();
 
         setIsLoading("sign");
