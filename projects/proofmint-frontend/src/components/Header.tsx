@@ -362,7 +362,7 @@ export const Header = ({
       </div>
 
       <a id="RegisterModalOpen" style={{ display: "none" }} href="#RegisterModal" data-bs-toggle="modal"></a>
-      <div id="RegisterModal" className="modal fade" data-bs-backdrop="static">
+      <div id="RegisterModal" className="modal fade">
         <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
           <div className="modal-content">
             <div className="modal-header">

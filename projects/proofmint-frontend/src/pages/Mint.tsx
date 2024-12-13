@@ -326,10 +326,13 @@ export const Mint = ({
       console.log(addresses, APP_ADDRESS, activeAccount?.address!);
       setIsSubmitting("Please sign the transaction in your wallet...");
       createToast("Please sign the transaction in your wallet");
+      // repeat 8 times { appIndex: 0, name: algosdk.bigIntToBytes(assetId, 8) } in array
+      const bxs = Array.from({ length: 5 }, (_, i) => ({ appIndex: 0, name: algosdk.bigIntToBytes(assetId, 8) }));
+
       const createMint = Caller.compose().registerMint(
         { assetId, addresses, costs: mbrPay },
         {
-          boxes: [{ appIndex: 0, name: algosdk.bigIntToBytes(assetId, 8) }],
+          boxes: bxs,
           assets: [assetId],
           accounts: [
             activeAccount?.address!, // creator of nft
