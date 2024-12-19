@@ -141,10 +141,11 @@ export const MyNfts = ({
       }
       if (mint.mbrClaim == 0) {
         setClaiming("Claiming MBR...");
+        const bxs = Array.from({ length: 6 }, (_, i) => ({ appIndex: 0, name: algosdk.bigIntToBytes(mint.assetId, 8) }));
         const claim = await Caller.claimMbr(
           { assetId: mint.assetId, address: activeAccount?.address!, index: mint.addressIndex },
           {
-            boxes: [{ appIndex: 0, name: algosdk.bigIntToBytes(mint.assetId, 8) }],
+            boxes: bxs,
             assets: [mint.assetId],
             sender: externalPayee,
             accounts: [activeAccount?.address!],
@@ -163,10 +164,11 @@ export const MyNfts = ({
         signer: transactionSigner,
       });
 
+      const bxs = Array.from({ length: 5 }, (_, i) => ({ appIndex: 0, name: algosdk.bigIntToBytes(mint.assetId, 8) }));
       claimMint.claimNft(
         { assetId: mint.assetId, index: mint.addressIndex },
         {
-          boxes: [{ appIndex: 0, name: algosdk.bigIntToBytes(mint.assetId, 8) }],
+          boxes: bxs,
           assets: [mint.assetId],
           accounts: [activeAccount.address, mint.metadata.creator],
           sender: { addr: activeAccount.address, signer: transactionSigner },
