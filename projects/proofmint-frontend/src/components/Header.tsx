@@ -209,9 +209,9 @@ export const Header = ({
                 <a target="_blank" href="https://www.linkedin.com/company/rejoltedtech/">
                   <i className="fa-brands fa-linkedin fa-lg" style={{ color: "white" }}></i>
                 </a>
-                <a target="_blank" href="https://github.com/orgs/proofmint/repositories">
+                {/* <a target="_blank" href="https://github.com/orgs/proofmint/repositories">
                   <i className="fa-brands fa-github fa-lg" style={{ color: "white" }}></i>
-                </a>
+                </a> */}
               </div>
               <div className="sign-in">
                 <button id="logee" className="login">
@@ -316,9 +316,9 @@ export const Header = ({
                 <a target="_blank" href="https://www.linkedin.com/company/rejoltedtech/">
                   <i className="fa-brands fa-linkedin fa-xl" style={{ color: "black" }}></i>
                 </a>
-                <a target="_blank" href="https://github.com/orgs/proofmint/repositories">
+                {/* <a target="_blank" href="https://github.com/orgs/proofmint/repositories">
                   <i className="fa-brands fa-github fa-xl" style={{ color: "black" }}></i>
-                </a>
+                </a> */}
               </div>
               <div style={{ paddingLeft: "0px" }} className="sign-in">
                 <button className="login" id="log">
